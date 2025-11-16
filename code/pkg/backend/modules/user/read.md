@@ -1,25 +1,27 @@
-mycli install user --storage mongo
+## 📦 Overview
+This module handles user management with minimal manual wiring and minimal “magic.” It is designed to integrate seamlessly into your project.
 
-# What is in it?
-
-
-# Installing
-
-To install this module use:
+# 🚀 Installation
 
 ```cmd
 mycli install user
 ```
 
-## parameters
+## 🔗 Wiring
+
+Every module is designed to require the minimum ammount of manual wiring as possible, and the minimum of magic possible.
+
+in main should call the Register method defined into "./users/routes/innit.go"
+
+## 🛠 parameters
 
 ### Storage
 
-With this you can specify the storage method that's gonna be used for this module:
+Specify the storage backend to use with the module:
 ```cmd
 mycli install user --storage mongo
 ```
+- If omitted, the module will use the database already installed.
+- If no database is installed, MongoDB will be used as the default.
 
-- if ommited the already installed DB gonna be used.
-- if any DB are installed it gonna use mongo as the default one.
 > See more supported storage options [here]().
