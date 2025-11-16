@@ -1,8 +1,13 @@
 package main
 
 import (
-	"MODULE_PATH/backend/routes"
 	"log"
+
+	"PLACEHOLDERPATH/backend/app"
+	"PLACEHOLDERPATH/backend/app/config"
+	"PLACEHOLDERPATH/backend/app/routes"
+	stock_service "PLACEHOLDERPATH/backend/modules/stock/service"
+	user_service "PLACEHOLDERPATH/backend/modules/users/service"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -13,7 +18,25 @@ func main() {
 		log.Println("No .env file found, relying on environment variables")
 	}
 
+	db := config.StartDBConnection()
+	cache := config.StartCacheConnection()
 	router := gin.Default()
-	routes.InitRoutes(router)
-	router.Run(":8080")
+
+	// SERVICES
+	stockService := stock_service.New(db.Database("cluster").Collection("stock"))
+	userService := user_service.New(db.Database("cluster").Collection("users"), cache, "")
+
+	aplication := app.NewApp(
+		db,
+		cache,
+		router,
+		&app.Services{
+			Stock: stockService,
+			User:  userService,
+		},
+	)
+
+	routes.InitRoutes(aplication)
+
+	aplication.Router.Run(":8080")
 }
